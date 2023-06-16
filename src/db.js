@@ -55,7 +55,7 @@ let capsEntries = entries.map((entry) => [
 ]);
 sequelize.models = Object.fromEntries(capsEntries);
 
-// const { DailyReport, WeeklyReport, User } = sequelize.models;
+const { User } = sequelize.models;
 
 module.exports = {
  ...sequelize.models,
