@@ -5,6 +5,7 @@ async function addTurno(req, res) {
     const { date, userId } = req.body;
     try {
       const existingTurno = await Turno.findOne({ where: { userId } });
+      
       if (existingTurno) {
         console.log('A turno already exists for the user');
         return res.status(400).send('A turno already exists for the user');
