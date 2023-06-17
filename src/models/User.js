@@ -41,9 +41,12 @@ module.exports = (sequelize) => {
             },
             userType: {
                 type: DataTypes.ENUM('doctor', 'patient', 'admin'),
-                allowNull: false,        
-                defaultValue: 'patient',    
-            },
+                allowNull: false,
+                defaultValue: 'patient',
+            },            
         },
+        {
+            timestamps: false
+        }
     );
 };

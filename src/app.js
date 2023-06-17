@@ -3,7 +3,8 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
-const routes = require('./routes/user.routes.js');
+const user_routes = require('./routes/user.routes.js');
+const turno_routes = require('./routes/turno.routes.js');
 // const { CLIENT_PORT } = process.env;
 
 require('./db.js');
@@ -28,7 +29,7 @@ server.use((req, res, next) => {
  next();
 });
 
-server.use('/', routes);
+server.use('/', user_routes, turno_routes);
 
 server.use((err, req, res, next) => {
  eslint-disable-line; no-unused-vars;

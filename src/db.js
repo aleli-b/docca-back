@@ -55,7 +55,12 @@ let capsEntries = entries.map((entry) => [
 ]);
 sequelize.models = Object.fromEntries(capsEntries);
 
-const { User } = sequelize.models;
+const { User, Turno } = sequelize.models;
+
+User.hasOne(Turno, {as: 'turno', foreignKey: 'userId'});
+Turno.belongsTo(User, {as: 'paciente', foreignKey: 'userId'})
+
+
 
 module.exports = {
  ...sequelize.models,
