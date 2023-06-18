@@ -28,6 +28,7 @@ const getTurnoWithUser = async (req, res) => {
 
         if (!turno) {
             console.log('Turno not found');
+            res.status(404).send('Turno no encontrado')
             return;
         }
 
@@ -35,7 +36,7 @@ const getTurnoWithUser = async (req, res) => {
 
         console.log('Turno:', turno.toJSON());
         console.log('User:', user.toJSON());
-        res.send('este es el turno ' + turno.id + ' de ' + user.username)
+        res.send('este es el turno con fecha y hora ' + turno.date + ' de ' + user.username)
     } catch (error) {
         console.error('Error retrieving turno:', error);
         res.status(400).send('Ha habido un error')
