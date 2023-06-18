@@ -4,15 +4,14 @@ const { Turno } = require('../db');
 async function addTurno(req, res) {
     const { date, userId } = req.body;
     try {
-      const existingTurno = await Turno.findOne({ where: { userId } });
-      
+      const existingTurno = await Turno.findOne({ where: { userId }, include: 'paciente' });
+      if(existingTurno.paciente.userType === 'doctor') return res.status(400).send('Los doctores no pueden sacar turno')
       if (existingTurno) {
         console.log('A turno already exists for the user');
         return res.status(400).send('A turno already exists for the user');
       }
     
-      const turno = await Turno.create({ date, userId });
-      console.log(turno);
+      const turno = await Turno.create({ date, userId });      
       res.send({ turno });
     } catch (error) {
       console.error(error);
