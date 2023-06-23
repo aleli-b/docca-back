@@ -43,7 +43,12 @@ module.exports = (sequelize) => {
                 type: DataTypes.ENUM('doctor', 'patient', 'admin'),
                 allowNull: false,
                 defaultValue: 'patient',
-            },            
+            }, 
+            category: {
+                type: DataTypes.ENUM('otorrinolaringologo', 'odontologo', 'endocrinologo', 'infectologo'),
+                allowNull: true,
+                defaultValue: null,
+            }           
         },
         {
             timestamps: false

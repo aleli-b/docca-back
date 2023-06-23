@@ -5,11 +5,53 @@ const jwt = require('jsonwebtoken');
 const secret = process.env.SECRET_KEY;
 const saltRounds = 5;
 
+async function getUsers(req, res) {
+    const userDB = await User.findAll();
+    return res.status(200).json(userDB)
+}
+
+async function getUsersByCategory(req, res) {
+    try {
+        const category = req.params.category;
+        console.log(category)
+        const users = await User.findAll({
+            where: {
+                category: category,
+            },
+        });
+        
+        if (!users.length) {
+            return res.status(404).json({ error: `No se encontraron usuarios en la categoría ${category}` });
+        }
+
+        const usersByCategory = users.reduce((result, user) => {
+            const userCategories = Array.isArray(user.category) ? user.category : [user.category];
+
+            
+            userCategories.forEach((cat) => {
+                if (!result[cat]) {
+                    result = [];
+                }
+                result.push(user);
+                
+            });
+            
+            return result;
+        }, {});
+
+        res.status(200).json(usersByCategory);
+    } catch (error) {
+        console.log(error)
+        res.status(400).send({ok: false})
+    }
+}
+
 async function addUser(req, res) {
     let username = req.body.username;
     let email = req.body.email;
     let password = req.body.password;
     let userType = req.body.userType;
+    let category = req.body.category;
 
     try {
         const userToSave = new User({
@@ -17,10 +59,13 @@ async function addUser(req, res) {
             email: email,
             password: password,
             userType: userType,
+            category: category,
         })
 
         userToSave.username = userToSave.username?.toLowerCase();
         userToSave.email = userToSave.email?.toLowerCase();
+
+        if (userType === 'doctor' && category == null) return res.status(400).send('No puedes agregar un doctor sin especialidad')
 
         const checkUsername = await User.findOne({ where: { username: userToSave.username } });
         const checkEmail = await User.findOne({ where: { email: userToSave.email } });
@@ -45,6 +90,22 @@ async function addUser(req, res) {
             msg: 'No se pudo guardar el usuario',
             ok: false
         });
+    }
+}
+
+async function delUser(req, res) {
+    try {
+        const id = req.params.id;
+        console.log(id)
+        const deletedUser = await User.findByPk(id);
+        if (!deletedUser) {
+            return res.status(404).send(`El usuario con id ${id} no se ha encontrado`)
+        }
+        await deletedUser.destroy();
+        return res.status(200).send('Usuario borrado');
+    } catch (error) {
+        console.log(error)
+        res.status(400).send('Error al borrar usuario');
     }
 }
 
@@ -75,7 +136,7 @@ async function login(req, res) {
             msg: 'Login exitoso',
             ok: true,
             token,
-            user
+            user: user.username
         })
 
     } catch (error) {
@@ -88,6 +149,9 @@ async function login(req, res) {
 }
 
 module.exports = {
+    getUsers,
     addUser,
+    delUser,
+    getUsersByCategory,
     login
 }
