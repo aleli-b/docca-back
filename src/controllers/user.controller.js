@@ -7,6 +7,7 @@ const saltRounds = 5;
 
 async function getUsers(req, res) {
     const userDB = await User.findAll();
+    console.log(userDB)
     return res.status(200).json(userDB)
 }
 
@@ -19,57 +20,63 @@ async function getUsersByCategory(req, res) {
                 category: category,
             },
         });
-        
+
         if (!users.length) {
-            return res.status(404).json({ error: `No se encontraron usuarios en la categoría ${category}` });
+            return res.status(200).json({ error: `No se encontraron usuarios en la categoría ${category}` });
         }
 
         const usersByCategory = users.reduce((result, user) => {
             const userCategories = Array.isArray(user.category) ? user.category : [user.category];
 
-            
+
             userCategories.forEach((cat) => {
                 if (!result[cat]) {
                     result = [];
                 }
                 result.push(user);
-                
+
             });
-            
+
             return result;
         }, {});
 
         res.status(200).json(usersByCategory);
     } catch (error) {
         console.log(error)
-        res.status(400).send({ok: false})
+        res.status(400).send({ ok: false })
     }
 }
 
 async function addUser(req, res) {
-    let username = req.body.username;
+    let name = req.body.name;
+    let lastName = req.body.lastName;
+    let age = req.body.age;
     let email = req.body.email;
     let password = req.body.password;
     let userType = req.body.userType;
     let category = req.body.category;
+    let banned = req.body.banned || false;
 
     try {
         const userToSave = new User({
-            username: username,
+            name: name,
+            lastName: lastName,
+            age: age,
             email: email,
             password: password,
             userType: userType,
             category: category,
+            banned: banned,
         })
 
-        userToSave.username = userToSave.username?.toLowerCase();
+        // userToSave.username = userToSave.username?.toLowerCase();
         userToSave.email = userToSave.email?.toLowerCase();
 
         if (userType === 'doctor' && category == null) return res.status(400).send('No puedes agregar un doctor sin especialidad')
 
-        const checkUsername = await User.findOne({ where: { username: userToSave.username } });
+        // const checkUsername = await User.findOne({ where: { username: userToSave.username } });
         const checkEmail = await User.findOne({ where: { email: userToSave.email } });
-        if (checkUsername || checkEmail) return res.status(401).send("email o usuario en uso");
+        if (checkEmail) return res.status(401).send("email o usuario en uso");
 
         const hash = await bcrypt.hash(password, saltRounds);
         userToSave.password = hash;
@@ -93,21 +100,27 @@ async function addUser(req, res) {
     }
 }
 
-async function delUser(req, res) {
+const banUser = async (req, res) => {
     try {
         const id = req.params.id;
-        console.log(id)
-        const deletedUser = await User.findByPk(id);
-        if (!deletedUser) {
-            return res.status(404).send(`El usuario con id ${id} no se ha encontrado`)
+        console.log(id);
+        const user = await User.findByPk(id);
+        if (!user) {
+            return res.status(404).send(`El usuario con id ${id} no se ha encontrado`);
         }
-        await deletedUser.destroy();
-        return res.status(200).send('Usuario borrado');
+        if (user.banned == false) {
+            user.banned = true;
+        } else {
+            user.banned = false
+        }
+        await user.save();
+        return res.status(200).send(user);
     } catch (error) {
-        console.log(error)
-        res.status(400).send('Error al borrar usuario');
+        console.log(error);
+        res.status(400).send('Error al actualizar estado de usuario');
     }
-}
+};
+
 
 async function login(req, res) {
     try {
@@ -151,7 +164,7 @@ async function login(req, res) {
 module.exports = {
     getUsers,
     addUser,
-    delUser,
+    banUser,
     getUsersByCategory,
     login
 }

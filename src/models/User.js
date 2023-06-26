@@ -10,10 +10,17 @@ module.exports = (sequelize) => {
                 primaryKey: true,
                 defaultValue: DataTypes.UUIDV4,
             },
-            username: {
+            name: {
                 type: DataTypes.STRING,
+                allowNull: false,                
+            },
+            lastName: {
+                type: DataTypes.STRING,
+                allowNull: false,                
+            },
+            age: {
+                type: DataTypes.INTEGER,
                 allowNull: false,
-                unique: true,
             },
             email: {
                 type: DataTypes.STRING,
@@ -40,12 +47,12 @@ module.exports = (sequelize) => {
                 defaultValue: false,
             },
             userType: {
-                type: DataTypes.ENUM('doctor', 'patient', 'admin'),
+                type: DataTypes.ENUM('doctor', 'patient', 'lab'),
                 allowNull: false,
                 defaultValue: 'patient',
             }, 
             category: {
-                type: DataTypes.ENUM('otorrinolaringologo', 'odontologo', 'endocrinologo', 'infectologo'),
+                type: DataTypes.ENUM('otorrinolaringologo', 'odontologo', 'endocrinologo', 'infectologo', 'cardiologo'),
                 allowNull: true,
                 defaultValue: null,
             }           

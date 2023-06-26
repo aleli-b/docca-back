@@ -8,7 +8,7 @@ router.get('/users/categories/:category', userController.getUsersByCategory);
 
 router.post('/users', userController.addUser)
 
-router.delete('/users/:id', userController.delUser)
+router.patch('/users/:id', userController.banUser)
 
 router.post('/login', userController.login)
 
