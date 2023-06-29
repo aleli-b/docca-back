@@ -149,7 +149,7 @@ async function login(req, res) {
             msg: 'Login exitoso',
             ok: true,
             token,
-            user: user.username
+            user
         })
 
     } catch (error) {
