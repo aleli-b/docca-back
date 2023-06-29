@@ -7,6 +7,14 @@ async function getTurnos(req, res) {
   return res.status(200).json(turnoDB)
 }
 
+async function getOccupiedTurnos(req, res) {
+  const { doctorId } = req.body;
+  const turnoDB = await Turno.findAll({where: { doctorId }, include: 'doctor'});
+  console.log(turnoDB);
+  return res.status(200).json(turnoDB);
+}
+
+
 async function addTurno(req, res) {
   const { date, userId, doctorId } = req.body;
   try {
@@ -59,6 +67,7 @@ const getTurnoWithUser = async (req, res) => {
 
 module.exports = {
   getTurnos,
+  getOccupiedTurnos,
   addTurno,
   getTurnoWithUser
 }

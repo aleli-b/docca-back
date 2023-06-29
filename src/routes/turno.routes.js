@@ -5,6 +5,8 @@ const jwtVerify = require('../middlewares/isAuth')
 
 router.post('/turnos', jwtVerify , turnoController.addTurno)
 
+router.post('/turnos-ocupados', jwtVerify , turnoController.getOccupiedTurnos)
+
 router.get('/user-turnos', jwtVerify , turnoController.getTurnoWithUser)
 
 router.get('/turnos', jwtVerify , turnoController.getTurnos)
