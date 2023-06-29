@@ -7,6 +7,14 @@ const saltRounds = 5;
 
 async function getUsers(req, res) {
     const userDB = await User.findAll();
+    console.log(userDB);
+    return res.status(200).json(userDB);
+}
+
+async function getDoctors(req, res) {
+    const userDB = await User.findAll({where: {
+        userType: 'doctor'
+    }});
     console.log(userDB)
     return res.status(200).json(userDB)
 }
@@ -163,6 +171,7 @@ async function login(req, res) {
 
 module.exports = {
     getUsers,
+    getDoctors,
     addUser,
     banUser,
     getUsersByCategory,

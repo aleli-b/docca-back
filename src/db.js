@@ -57,8 +57,9 @@ sequelize.models = Object.fromEntries(capsEntries);
 
 const { User, Turno } = sequelize.models;
 
-User.hasOne(Turno, {as: 'turno', foreignKey: 'userId'});
-Turno.belongsTo(User, {as: 'paciente', foreignKey: 'userId'})
+User.hasMany(Turno, {as: 'turno', foreignKey: 'userId'});
+Turno.belongsTo(User, {as: 'doctor', foreignKey: 'doctorId'});
+Turno.belongsTo(User, {as: 'paciente', foreignKey: 'userId'});
 
 
 

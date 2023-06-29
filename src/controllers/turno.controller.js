@@ -8,20 +8,24 @@ async function getTurnos(req, res) {
 }
 
 async function addTurno(req, res) {
-  const { date, userId } = req.body;
+  const { date, userId, doctorId } = req.body;
   try {
-    const existingTurno = await Turno.findOne({ where: { userId }, include: 'paciente' });
-    if (existingTurno) {
-      console.log('No turno found for the user');
-      return res.status(400).send('No turno found for the user');
+    console.log(userId, doctorId)
+    const pacienteHasTurno = await Turno.findOne({ where: { userId }, include: 'paciente' });
+    const doctorHasTurno = await Turno.findOne({ where: { doctorId }, include: 'doctor' });
+    
+    if (pacienteHasTurno) {
+      console.log('The User already has a turno');
+      return res.status(400).send('The User already has a turno');
+    }
+    
+    if (doctorHasTurno) {
+      console.log('The Doctor already has a turno');
+      return res.status(400).send('The Doctor already has a turno');
     }
 
-    // if (existingTurno.paciente.userType === 'doctor') {
-    //   console.log('Los doctores no pueden sacar turno');
-    //   return res.status(400).send('Los doctores no pueden sacar turno');
-    // }
 
-    const turno = await Turno.create({ date, userId });
+    const turno = await Turno.create({ date, userId, doctorId });    
     res.send({ turno });
   } catch (error) {
     console.error(error);

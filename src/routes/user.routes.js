@@ -4,6 +4,8 @@ const userController = require('../controllers/user.controller');
 
 router.get('/users', userController.getUsers)
 
+router.get('/doctors', userController.getDoctors)
+
 router.get('/users/categories/:category', userController.getUsersByCategory);
 
 router.post('/users', userController.addUser)
