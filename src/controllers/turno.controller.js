@@ -1,4 +1,5 @@
 require('dotenv').config({ path: './.env' });
+const moment = require('moment');
 const { Turno } = require('../db');
 
 async function getTurnos(req, res) {
@@ -18,7 +19,7 @@ async function getOccupiedTurnos(req, res) {
 async function addTurno(req, res) {
   const { date, userId, doctorId } = req.body;
   try {
-    console.log(userId, doctorId)
+    console.log(userId, doctorId);
     const pacienteHasTurno = await Turno.findOne({ where: { userId }, include: 'paciente' });
     const doctorHasTurno = await Turno.findOne({ where: { doctorId }, include: 'doctor' });
     
@@ -26,14 +27,15 @@ async function addTurno(req, res) {
       console.log('The User already has a turno');
       return res.status(400).send('The User already has a turno');
     }
-    
+
     if (doctorHasTurno) {
       console.log('The Doctor already has a turno');
       return res.status(400).send('The Doctor already has a turno');
     }
-
-
-    const turno = await Turno.create({ date, userId, doctorId });    
+    
+    const formattedDate = moment(date, 'D [de] MMMM HH:mm').format('YYYY-MM-DD HH:mm');
+    console.log(formattedDate)
+    const turno = await Turno.create({ date: formattedDate, userId, doctorId });
     res.send({ turno });
   } catch (error) {
     console.error(error);
