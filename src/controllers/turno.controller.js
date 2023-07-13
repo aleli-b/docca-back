@@ -10,8 +10,7 @@ async function getTurnos(req, res) {
 
 async function getOccupiedTurnos(req, res) {
   const { doctorId } = req.body;
-  const turnoDB = await Turno.findAll({where: { doctorId }, include: 'doctor'});
-  console.log(turnoDB);
+  const turnoDB = await Turno.findAll({where: { doctorId }, include: 'doctor'});  
   return res.status(200).json(turnoDB);
 }
 
