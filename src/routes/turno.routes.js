@@ -7,7 +7,9 @@ router.post('/turnos', jwtVerify , turnoController.addTurno)
 
 router.post('/turnos-ocupados', /* jwtVerify, */ turnoController.getOccupiedTurnos)
 
-router.get('/user-turnos', jwtVerify , turnoController.getTurnoWithUser)
+router.post('/user-turnos', /* jwtVerify, */ turnoController.getPacienteTurno)
+
+router.post('/doctor-turnos', /* jwtVerify, */ turnoController.getDoctorTurno)
 
 router.get('/turnos', jwtVerify , turnoController.getTurnos)
 
