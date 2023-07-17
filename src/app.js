@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const user_routes = require('./routes/user.routes.js');
 const turno_routes = require('./routes/turno.routes.js');
+const message_routes = require('./routes/message.routes.js');
 // const { CLIENT_PORT } = process.env;
 
 require('./db.js');
@@ -29,7 +30,7 @@ server.use((req, res, next) => {
  next();
 });
 
-server.use('/', user_routes, turno_routes);
+server.use('/', user_routes, turno_routes, message_routes);
 
 server.use((err, req, res, next) => {
  eslint-disable-line; no-unused-vars;

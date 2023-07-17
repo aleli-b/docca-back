@@ -12,11 +12,11 @@ module.exports = (sequelize) => {
             },
             name: {
                 type: DataTypes.STRING,
-                allowNull: false,                
+                allowNull: false,
             },
             lastName: {
                 type: DataTypes.STRING,
-                allowNull: false,                
+                allowNull: false,
             },
             age: {
                 type: DataTypes.INTEGER,
@@ -50,12 +50,12 @@ module.exports = (sequelize) => {
                 type: DataTypes.ENUM('doctor', 'patient', 'lab'),
                 allowNull: false,
                 defaultValue: 'patient',
-            }, 
+            },
             category: {
                 type: DataTypes.ENUM('otorrinolaringologo', 'odontologo', 'endocrinologo', 'infectologo', 'cardiologo'),
                 allowNull: true,
                 defaultValue: null,
-            }           
+            }
         },
         {
             timestamps: false
