@@ -22,33 +22,17 @@ async function getDoctors(req, res) {
 async function getUsersByCategory(req, res) {
     try {
         const category = req.params.category;
-        console.log(category)
         const users = await User.findAll({
             where: {
                 category: category,
             },
         });
 
-        if (!users.length) {
+        if (!users) {
             return res.status(200).json({ error: `No se encontraron usuarios en la categoría ${category}` });
         }
 
-        const usersByCategory = users.reduce((result, user) => {
-            const userCategories = Array.isArray(user.category) ? user.category : [user.category];
-
-
-            userCategories.forEach((cat) => {
-                if (!result[cat]) {
-                    result = [];
-                }
-                result.push(user);
-
-            });
-
-            return result;
-        }, {});
-
-        res.status(200).json(usersByCategory);
+        res.status(200).json(users);
     } catch (error) {
         console.log(error)
         res.status(400).send({ ok: false })
