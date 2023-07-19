@@ -5,6 +5,8 @@ const convoVerify = async (req, res, next) => {
     try {
         const { senderId, receiverId, } = req.body;
 
+        if (senderId === receiverId) return res.status(400).send('No puedes conversar contigo mismo')
+
         // Check if a conversation exists between sender and receiver
         const conversation = await Conversation.findOne({
             where: {
