@@ -6,7 +6,11 @@ const secret = process.env.SECRET_KEY;
 const saltRounds = 5;
 
 async function getUsers(req, res) {
-    const userDB = await User.findAll();
+    const userDB = await User.findAll({
+        attributes: {
+            exclude: [ 'password' ]
+        }
+    });
     console.log(userDB);
     return res.status(200).json(userDB);
 }
