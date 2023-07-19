@@ -135,7 +135,7 @@ async function login(req, res) {
             })
         }
 
-        const token = jwt.sign(user.toJSON(), secret, { expiresIn: '2h' });
+        const token = jwt.sign(user.toJSON(), secret);
 
         if (user) return res.status(200).send({
             msg: 'Login exitoso',
