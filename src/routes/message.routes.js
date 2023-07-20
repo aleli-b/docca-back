@@ -101,7 +101,6 @@ router.get('/conversations/user', async (req, res) => {
         ];
 
         res.json(conversations);
-        console.log(conversations)
     } catch (error) {
         console.error('Error fetching conversations:', error);
         res.status(500).json({ error: 'Failed to fetch conversations.' });
@@ -111,11 +110,11 @@ router.get('/conversations/user', async (req, res) => {
 // Get Messages in a Conversation
 router.get('/conversations/messages', async (req, res) => {
     try {
-        const { conversationId } = req.body;
+        const { conversationId } = req.query; // Use req.query to get the conversationId from query parameters
         const conversation = await Conversation.findByPk(conversationId, {
             include: {
                 model: Message,
-                as: 'messages'
+                as: 'messages',
             },
         });
         res.json(conversation.messages);
