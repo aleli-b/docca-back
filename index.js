@@ -11,7 +11,7 @@ const port = process.env.PORT || 4000; // Use a default port (e.g., 3000) if POR
 const httpServer = http.createServer(app);
 const io = socketIO(httpServer, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "https://docappoint.com.mx",
     methods: ["GET", "POST"]
   }
 });
