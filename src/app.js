@@ -6,7 +6,7 @@ const morgan = require('morgan');
 const user_routes = require('./routes/user.routes.js');
 const turno_routes = require('./routes/turno.routes.js');
 const message_routes = require('./routes/message.routes.js');
-// const { CLIENT_PORT } = process.env;
+const { CORS_DOMAIN } = process.env;
 
 const server = express();
 
@@ -18,7 +18,7 @@ server.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 server.use(bodyParser.json({ limit: '50mb' }));
 server.use(morgan('dev'));
 server.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'https://docappoint.com.mx'); // Replace this with your frontend domain
+    res.header('Access-Control-Allow-Origin', CORS_DOMAIN); // Replace this with your frontend domain
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header(
       'Access-Control-Allow-Headers',
@@ -31,7 +31,6 @@ server.use((req, res, next) => {
 server.use('/', user_routes, turno_routes, message_routes);
 
 server.use((err, req, res, next) => {
-  // eslint-disable-line no-unused-vars;
   const status = err.status || 500;
   const message = err.message || err;
   console.error(err);
