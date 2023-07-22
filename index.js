@@ -3,6 +3,7 @@ const socketIO = require('socket.io');
 const { db } = require('./src/db.js');
 const handleSocketConnection = require('./src/sockets/socketHandlers');
 const app = require('./src/app.js');
+const { CORS_DOMAIN } = process.env;
 
 require('dotenv').config();
 
@@ -11,7 +12,7 @@ const port = process.env.PORT || 4000; // Use a default port (e.g., 3000) if POR
 const httpServer = http.createServer(app);
 const io = socketIO(httpServer, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: CORS_DOMAIN,
     methods: ["GET", "POST"]
   }
 });
