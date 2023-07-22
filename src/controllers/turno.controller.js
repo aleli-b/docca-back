@@ -36,7 +36,7 @@ async function addTurno(req, res) {
       return res.status(400).send('The User already has a turno');
     }
 
-    const formattedDate = moment(date, 'D [de] MMMM HH:mm').format('YYYY-MM-DD HH:mm');
+    const formattedDate = moment.utc(date, 'D [de] MMMM HH:mm').format('YYYY-MM-DD HH:mm');
     const turno = await Turno.create({ date: formattedDate, userId, doctorId });
     res.send({ turno });
   } catch (error) {
