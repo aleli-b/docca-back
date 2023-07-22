@@ -51,6 +51,7 @@ async function addUser(req, res) {
     let password = req.body.password;
     let userType = req.body.userType;
     let category = req.body.category;
+    let lab_category = req.body.lab_category;
     let banned = req.body.banned || false;
 
     try {
@@ -62,15 +63,15 @@ async function addUser(req, res) {
             password: password,
             userType: userType,
             category: category,
+            lab_category: lab_category,
             banned: banned,
         })
 
-        // userToSave.username = userToSave.username?.toLowerCase();
         userToSave.email = userToSave.email?.toLowerCase();
 
-        if (userType === 'doctor' && category == null) return res.status(400).send('No puedes agregar un doctor sin especialidad')
+        if (userType === 'doctor' && category == null) return res.status(400).send('No puedes agregar un doctor sin especialidad');
+        if (userType === 'lab' && lab_category == null) return res.status(400).send('No puedes agregar un laboratorio sin especialidad');
 
-        // const checkUsername = await User.findOne({ where: { username: userToSave.username } });
         const checkEmail = await User.findOne({ where: { email: userToSave.email } });
         if (checkEmail) return res.status(401).send("email o usuario en uso");
 
@@ -88,7 +89,7 @@ async function addUser(req, res) {
         });
 
     } catch (error) {
-        console.log(error)
+        console.log(error, 'error')
         res.status(400).send({
             msg: 'No se pudo guardar el usuario',
             ok: false

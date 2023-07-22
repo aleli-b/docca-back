@@ -16,7 +16,7 @@ module.exports = (sequelize) => {
             },
             lastName: {
                 type: DataTypes.STRING,
-                allowNull: false,
+                allowNull: false,                
             },
             age: {
                 type: DataTypes.INTEGER,
@@ -33,6 +33,20 @@ module.exports = (sequelize) => {
             password: {
                 type: DataTypes.STRING,
                 allowNull: false,
+            },
+            phone: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            description: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                validate: {
+                    len: {
+                        args: [27],
+                        msg: 'la descripcion es muy corta'
+                    }
+                }
             },
             banned: {
                 type: DataTypes.BOOLEAN,
@@ -55,7 +69,16 @@ module.exports = (sequelize) => {
                 type: DataTypes.ENUM('otorrinolaringologo', 'odontologo', 'endocrinologo', 'infectologo', 'cardiologo'),
                 allowNull: true,
                 defaultValue: null,
-            }
+            },
+            lab_category: {
+                type: DataTypes.ENUM('bioquimico', 'radiografia', 'tomografia',),
+                allowNull: true,
+                defaultValue: null,
+            },
+            profile_picture_url: { 
+                type: DataTypes.STRING, 
+                allowNull: true, 
+            },
         },
         {
             timestamps: false
