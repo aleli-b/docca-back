@@ -8,7 +8,7 @@ const saltRounds = 5;
 async function getUsers(req, res) {
     const userDB = await User.findAll({
         attributes: {
-            exclude: [ 'password' ]
+            exclude: ['password']
         }
     });
     console.log(userDB);
@@ -16,9 +16,11 @@ async function getUsers(req, res) {
 }
 
 async function getDoctors(req, res) {
-    const userDB = await User.findAll({where: {
-        userType: 'doctor'
-    }});
+    const userDB = await User.findAll({
+        where: {
+            userType: 'doctor'
+        }
+    });
     console.log(userDB)
     return res.status(200).json(userDB)
 }
@@ -97,6 +99,46 @@ async function addUser(req, res) {
     }
 }
 
+async function updateUser(req, res) {
+    try {
+        const id = req.params.id;
+        console.log(id)
+
+        if (!id) return res.status(400).send('Debes enviar un id')
+
+        const update = req.body;
+
+        const user = await User.findByPk(id);
+
+        if (!user) {
+            return res.status(404).send({
+                msg: `No se encontro el usuario`,
+                ok: false,
+            });
+        }
+
+        await user.update(update);
+
+        const updatedUser = await User.findOne({
+            where: { id },
+            attributes: { exclude: ['password'] }
+        });
+
+        return res.status(200).send({
+            msg: `Actualizar usuario ${id}`,
+            newUser: updatedUser,
+            ok: true,
+        });
+
+    } catch (error) {
+        console.log(error)
+        res.status(400).send({
+            msg: `Error al actualizar el usuario`,
+            ok: false,
+        });
+    }
+}
+
 const banUser = async (req, res) => {
     try {
         const id = req.params.id;
@@ -163,6 +205,7 @@ module.exports = {
     getDoctors,
     addUser,
     banUser,
+    updateUser,
     getUsersByCategory,
     login
 }
