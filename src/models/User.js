@@ -38,6 +38,10 @@ module.exports = (sequelize) => {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
+            adress: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
             description: {
                 type: DataTypes.STRING,
                 allowNull: true,
@@ -66,7 +70,7 @@ module.exports = (sequelize) => {
                 defaultValue: 'patient',
             },
             category: {
-                type: DataTypes.ENUM('otorrinolaringologo', 'odontologo', 'endocrinologo', 'infectologo', 'cardiologo'),
+                type: DataTypes.ENUM('Otorrinolaringólogo', 'Odontólogo', 'Endocrinólogo', 'Infectólogo', 'Cardiólogo', 'Ortopédico',),
                 allowNull: true,
                 defaultValue: null,
             },

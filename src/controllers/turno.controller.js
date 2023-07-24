@@ -26,7 +26,10 @@ async function addTurno(req, res) {
     const pacienteHasTurno = await Turno.findOne({ where: { userId }, include: 'paciente' });
     const doctorCheck = await Turno.findOne({ where: { doctorId }, include: 'doctor' });
 
-    if (doctorCheck && date === doctorCheck.date) {
+    // Convert date to UTC
+    const formattedDateUTC = moment.utc(date, 'D [de] MMMM HH:mm').format('YYYY-MM-DD HH:mm');
+
+    if (doctorCheck && formattedDateUTC === doctorCheck.date) {
       console.log('The Doctor already has a turno');
       return res.status(401).send('The Doctor already has a turno');
     }
@@ -36,14 +39,14 @@ async function addTurno(req, res) {
       return res.status(400).send('The User already has a turno');
     }
 
-    const formattedDate = moment.utc(date, 'D [de] MMMM HH:mm').format('YYYY-MM-DD HH:mm');
-    const turno = await Turno.create({ date: formattedDate, userId, doctorId });
+    const turno = await Turno.create({ date: formattedDateUTC, userId, doctorId });
     res.send({ turno });
   } catch (error) {
     console.error(error);
     res.status(500).send('Error creating turno');
   }
 }
+
 
 async function getPacienteTurno(req, res) {
   try {
