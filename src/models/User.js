@@ -70,7 +70,7 @@ module.exports = (sequelize) => {
                 defaultValue: 'patient',
             },
             category: {
-                type: DataTypes.ENUM('Otorrinolaringólogo', 'Odontólogo', 'Endocrinólogo', 'Infectólogo', 'Cardiólogo', 'Ortopédico',),
+                type: DataTypes.ENUM('Otorrinolaringólogo', 'Odontólogo', 'Endocrinólogo', 'Infectólogo', 'Cardiólogo', 'Ortopédico', 'Dermatólogo', 'Estilo de Vida'),
                 allowNull: true,
                 defaultValue: null,
             },

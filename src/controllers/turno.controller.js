@@ -2,6 +2,7 @@ require('dotenv').config({ path: './.env' });
 const moment = require('moment-timezone');
 const cron = require('node-cron');
 const { Turno, User } = require('../db');
+const { Op } = require('sequelize');
 
 async function getOccupiedTurnos(req, res) {
   try {
@@ -95,7 +96,9 @@ async function deletePastTurnos() {
 
     const deletedTurnos = await Turno.destroy({
       where: {
-        date: { $lt: currentDateUTC }
+        date: {
+          [Op.lt]: currentDateUTC
+        }
       }
     });
 

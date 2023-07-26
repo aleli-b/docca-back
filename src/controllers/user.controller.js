@@ -55,6 +55,11 @@ async function addUser(req, res) {
     let banned = req.body.banned || false;
 
     try {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+        if (!password.match(passwordRegex)) {
+            return res.status(400).send('La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula y un número.');
+        }
+
         const userToSave = new User({
             name: name,
             lastName: lastName,
@@ -65,7 +70,7 @@ async function addUser(req, res) {
             category: category,
             lab_category: lab_category,
             banned: banned,
-        })
+        });
 
         userToSave.email = userToSave.email?.toLowerCase();
 
@@ -73,7 +78,7 @@ async function addUser(req, res) {
         if (userType === 'lab' && lab_category == null) return res.status(400).send('No puedes agregar un laboratorio sin especialidad');
 
         const checkEmail = await User.findOne({ where: { email: userToSave.email } });
-        if (checkEmail) return res.status(401).send("email o usuario en uso");
+        if (checkEmail) return res.status(401).send("Email o usuario en uso");
 
         const hash = await bcrypt.hash(password, saltRounds);
         userToSave.password = hash;
@@ -89,7 +94,7 @@ async function addUser(req, res) {
         });
 
     } catch (error) {
-        console.log(error, 'error')
+        console.log(error, 'error');
         res.status(400).send({
             msg: 'No se pudo guardar el usuario',
             ok: false
