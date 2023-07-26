@@ -21,7 +21,6 @@ function jwtVerify(req, res, next) {
                     ok: false
                 })
             } 
-            // console.log(payload)
             req.user = payload;
             next();
             

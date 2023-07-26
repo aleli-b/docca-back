@@ -11,7 +11,6 @@ async function getUsers(req, res) {
             exclude: ['password']
         }
     });
-    console.log(userDB);
     return res.status(200).json(userDB);
 }
 
@@ -21,7 +20,6 @@ async function getDoctors(req, res) {
             userType: 'doctor'
         }
     });
-    console.log(userDB)
     return res.status(200).json(userDB)
 }
 
@@ -102,7 +100,6 @@ async function addUser(req, res) {
 async function updateUser(req, res) {
     try {
         const id = req.params.id;
-        console.log(id)
 
         if (!id) return res.status(400).send('Debes enviar un id')
 
@@ -142,7 +139,6 @@ async function updateUser(req, res) {
 const banUser = async (req, res) => {
     try {
         const id = req.params.id;
-        console.log(id);
         const user = await User.findByPk(id);
         if (!user) {
             return res.status(404).send(`El usuario con id ${id} no se ha encontrado`);
