@@ -5,7 +5,11 @@ const userController = require('../controllers/user.controller');
 
 router.get('/users', userController.getUsers)
 
+router.get('/user/:id', userController.getUser)
+
 router.get('/doctors', userController.getDoctors)
+
+router.get('/labs', userController.getLabs)
 
 router.get('/users/categories/:category', userController.getUsersByCategory);
 

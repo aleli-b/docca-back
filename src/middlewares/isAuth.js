@@ -22,8 +22,7 @@ function jwtVerify(req, res, next) {
                 })
             } 
             req.user = payload;
-            next();
-            
+            next();            
         });
     
     } catch (error) {

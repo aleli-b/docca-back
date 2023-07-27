@@ -9,11 +9,11 @@ async function getOccupiedTurnos(req, res) {
     const turnoDB = await Turno.findAll({});
 
     // Convert the dates to UTC format before sending them to the frontend
-    const backendOccupiedDates = turnoDB.map((turno) => {
-      const formattedDateUTC = moment.utc(turno.date).format('YYYY-MM-DD HH:mm');
-      return { ...turno.dataValues, date: formattedDateUTC };
-    });
-    return res.status(200).json(backendOccupiedDates);
+    // const backendOccupiedDates = turnoDB.map((turno) => {
+    //   const formattedDateUTC = moment.utc(turno.date).format('YYYY-MM-DD HH:mm');
+    //   return { ...turno.dataValues, date: formattedDateUTC };
+    // });
+    return res.status(200).json(turnoDB);
   } catch (error) {
     console.log(error);
     res.status(400).send('Ha habido un error.');
@@ -22,9 +22,9 @@ async function getOccupiedTurnos(req, res) {
 
 async function addTurno(req, res) {
   const { date, userId, doctorId } = req.body;
+  console.log('primera', date);
+  console.log(userId, doctorId);
   try {
-    console.log(userId, doctorId);
-    console.log('primera', date);
     const pacienteHasTurno = await Turno.findOne({ where: { userId }, include: 'paciente' });
     const doctorCheck = await Turno.findOne({ where: { doctorId }, include: 'doctor' });
 
@@ -41,7 +41,7 @@ async function addTurno(req, res) {
     const turno = await Turno.create({ date, userId, doctorId });
     res.send({ turno });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).send('Error creating turno');
   }
 }

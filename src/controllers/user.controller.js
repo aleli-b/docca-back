@@ -14,12 +14,37 @@ async function getUsers(req, res) {
     return res.status(200).json(userDB);
 }
 
+async function getUser(req, res) {
+    try {
+        const id = req.params.id
+        const user = await User.findOne({
+            where: {
+                id: id,
+            }
+        })
+        return res.status(200).send(user);
+    } catch (error) {
+        console.log(error);
+        return res.status(400).send('Ha habido un error')
+    }
+}
+
 async function getDoctors(req, res) {
     const userDB = await User.findAll({
         where: {
             userType: 'doctor'
         }
     });
+    return res.status(200).json(userDB)
+}
+
+async function getLabs(req, res) {
+    const userDB = await User.findAll({
+        where: {
+            userType: 'lab'
+        }
+    });
+    console.log(userDB)
     return res.status(200).json(userDB)
 }
 
@@ -203,7 +228,9 @@ async function login(req, res) {
 
 module.exports = {
     getUsers,
+    getUser,
     getDoctors,
+    getLabs,
     addUser,
     banUser,
     updateUser,
