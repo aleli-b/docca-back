@@ -226,6 +226,32 @@ async function login(req, res) {
     }
 }
 
+async function forgotPassword (req, res) {
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({ where: { email } });
+        if (!user) {
+          return res.status(404).json({ message: 'User not found.' });
+        }
+    
+        const token = jwt.sign({ userId: user.id }, 'your-secret-key', { expiresIn: '1h' });
+    
+        user.passwordResetToken = token;
+        user.passwordResetExpires = new Date(Date.now() + 60 * 60 * 1000);
+    
+        await user.save();
+    
+        // Send the password reset link to the user's email
+        // You can use a library like nodemailer for this purpose
+        // Example: sendResetPasswordEmail(user.email, token);
+    
+        res.json({ message: 'Password reset email sent.' });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error.' });
+      }
+}
+
 module.exports = {
     getUsers,
     getUser,
@@ -235,5 +261,6 @@ module.exports = {
     banUser,
     updateUser,
     getUsersByCategory,
-    login
+    login,
+    forgotPassword,
 }

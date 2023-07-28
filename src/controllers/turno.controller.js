@@ -109,17 +109,17 @@ async function deletePastTurnos() {
   }
 }
 
-mercadopago.preferences
-  .create(turno)
-  .then(function (response) {
-    console.log(response);
-    res.json({
-      global: response.body.id,
-    });
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
+// mercadopago.preferences
+//   .create(turno)
+//   .then(function (response) {
+//     console.log(response);
+//     res.json({
+//       global: response.body.id,
+//     });
+//   })
+//   .catch(function (error) {
+//     console.log(error);
+//   });
 
 cron.schedule("0 0 * * *", deletePastTurnos);
 
