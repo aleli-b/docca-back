@@ -7,12 +7,6 @@ const { Op } = require('sequelize');
 async function getOccupiedTurnos(req, res) {
   try {
     const turnoDB = await Turno.findAll({});
-
-    // Convert the dates to UTC format before sending them to the frontend
-    // const backendOccupiedDates = turnoDB.map((turno) => {
-    //   const formattedDateUTC = moment.utc(turno.date).format('YYYY-MM-DD HH:mm');
-    //   return { ...turno.dataValues, date: formattedDateUTC };
-    // });
     return res.status(200).json(turnoDB);
   } catch (error) {
     console.log(error);
