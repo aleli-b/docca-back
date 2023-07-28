@@ -74,11 +74,6 @@ module.exports = (sequelize) => {
                 allowNull: true,
                 defaultValue: null,
             },
-            price: {
-                type: DataTypes.INTEGER,
-                allowNull: true,
-                defaultValue: null,
-            },
             lab_category: {
                 type: DataTypes.ENUM('bioquimico', 'radiografia', 'tomografia',),
                 allowNull: true,
