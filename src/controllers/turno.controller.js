@@ -3,7 +3,7 @@ const moment = require("moment-timezone");
 const cron = require("node-cron");
 const { Turno, User } = require("../db");
 const { Op } = require("sequelize");
-// const { mercadopago } = require("../utils/mercadoPago");
+const { mercadopago } = require("../utils/mercadoPago");
 
 async function getOccupiedTurnos(req, res) {
   try {
@@ -109,17 +109,17 @@ async function deletePastTurnos() {
   }
 }
 
-// mercadopago.preferences
-//   .create(turno)
-//   .then(function (response) {
-//     console.log(response);
-//     res.json({
-//       global: response.body.id,
-//     });
-//   })
-//   .catch(function (error) {
-//     console.log(error);
-//   });
+mercadopago.preferences
+  .create(turno)
+  .then(function (response) {
+    console.log(response);
+    res.json({
+      global: response.body.id,
+    });
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
 
 cron.schedule("0 0 * * *", deletePastTurnos);
 

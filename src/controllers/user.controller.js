@@ -2,7 +2,6 @@ require('dotenv').config({ path: './.env' });
 const { User } = require('../db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const transporter = require('../utils/mailer');
 const secret = process.env.SECRET_KEY;
 const saltRounds = 5;
 
@@ -227,50 +226,6 @@ async function login(req, res) {
     }
 }
 
-async function forgotPassword (req, res) {
-    try {
-        const { email } = req.body;
-    
-        // Check if the email exists in the database
-        const user = await User.findOne({ where: { email } });
-        if (!user) {
-          return res.status(404).json({ message: 'User not found.' });
-        }
-    
-        // Generate a password reset token with a 1-hour expiration
-        const token = jwt.sign({ userId: user.id }, 'your-secret-key', { expiresIn: '1h' });
-    
-        // Save the token and its expiration time in the user model
-        user.passwordResetToken = token;
-        user.passwordResetExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
-    
-        await user.save();
-    
-        // Send the password reset email to the user's email
-        const mailOptions = {
-          from: process.env.MAILER_MAIL, 
-          to: email,
-          subject: 'Password Reset Request',
-          text: `Click the following link to reset your password: http://your-frontend-url/reset-password/${token}`,
-          // You can also use HTML content for the email body if you prefer
-          // html: `<p>Click the following link to reset your password: <a href="http://your-frontend-url/reset-password/${token}">Reset Password</a></p>`
-        };
-    
-        transporter.sendMail(mailOptions, (error, info) => {
-          if (error) {
-            console.error(error);
-            return res.status(500).json({ message: 'Failed to send reset password email.' });
-          } else {
-            console.log('Reset password email sent:', info.response);
-            return res.json({ message: 'Password reset email sent.' });
-          }
-        });
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error.' });
-      }
-}
-
 module.exports = {
     getUsers,
     getUser,
@@ -280,6 +235,5 @@ module.exports = {
     banUser,
     updateUser,
     getUsersByCategory,
-    login,
-    forgotPassword,
+    login
 }
