@@ -6,6 +6,7 @@ const transporter = require('../utils/mailer');
 const secret = process.env.SECRET_KEY;
 const saltRounds = 5;
 const { v4: uuidv4 } = require('uuid');
+const upload = require('../utils/cloudinary')
 
 async function getUsers(req, res) {
     const userDB = await User.findAll({
@@ -281,34 +282,52 @@ async function resetPassword(req, res) {
     try {
         const { newPassword } = req.body;
         const { token: resetTokenId } = req.params
-    
+
         // Find the user based on the resetTokenId
         const user = await User.findOne({ where: { resetTokenId } });
-    
+
         // Verify the user and the JWT token data
         if (!user || user.passwordResetExpires < new Date()) {
-          return res.status(400).json({ message: 'Invalid or expired password reset token.' });
+            return res.status(400).json({ message: 'Invalid or expired password reset token.' });
         }
-    
+
         const decodedToken = jwt.verify(user.resetTokenData, 'your-secret-key');
         if (!decodedToken || decodedToken.userId !== user.id) {
-          return res.status(400).json({ message: 'Invalid or expired password reset token.' });
+            return res.status(400).json({ message: 'Invalid or expired password reset token.' });
         }
-    
+
         // Update the user's password
         const hash = await bcrypt.hash(newPassword, saltRounds);
         user.password = hash;
         user.resetTokenId = null;
         user.resetTokenData = null;
         user.passwordResetExpires = null;
-    
+
         await user.save();
-    
+
         return res.json({ message: 'Password reset successful.' });
-      } catch (error) {
+    } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error.' });
-      }    
+    }
+}
+
+async function uploadImage(req, res) {
+    try {
+        const userId = req.body.id; // Assuming you have set up authentication and have access to the user object through req.user
+        const imageUrl = await upload(req.body.image);
+
+        // Update the profile_picture_url field in the user model
+        await User.update(
+            { profile_picture_url: imageUrl },
+            { where: { id: userId } }
+        );
+
+        res.send(imageUrl);
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        res.status(500).send(error);
+    }
 }
 
 module.exports = {
@@ -323,4 +342,5 @@ module.exports = {
     login,
     forgotPassword,
     resetPassword,
+    uploadImage,
 }

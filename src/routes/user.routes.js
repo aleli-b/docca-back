@@ -25,4 +25,6 @@ router.post('/forgot-password', userController.forgotPassword);
 
 router.post('/reset-password/:token', userController.resetPassword);
 
+router.post('/upload-image', userController.uploadImage);
+
 module.exports = router;
