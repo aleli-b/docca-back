@@ -4,7 +4,6 @@ const cron = require("node-cron");
 const { Turno, User } = require("../db");
 const { Op } = require("sequelize");
 
-
 async function getOccupiedTurnos(req, res) {
   try {
     const turnoDB = await Turno.findAll({});
@@ -108,6 +107,18 @@ async function deletePastTurnos() {
     console.error(error);
   }
 }
+
+// mercadopago.preferences
+//   .create(turno)
+//   .then(function (response) {
+//     console.log(response);
+//     res.json({
+//       global: response.body.id,
+//     });
+//   })
+//   .catch(function (error) {
+//     console.log(error);
+//   });
 
 cron.schedule("0 0 * * *", deletePastTurnos);
 
