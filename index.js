@@ -12,7 +12,7 @@ const port = process.env.PORT || 4000; // Use a default port (e.g., 3000) if POR
 const httpServer = http.createServer(app);
 const io = socketIO(httpServer, {
   cors: {
-    origin: CORS_DOMAIN,
+    origin: [CORS_DOMAIN, `www.${CORS_DOMAIN}`],
     methods: ["GET", "POST"]
   }
 });

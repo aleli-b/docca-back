@@ -21,4 +21,8 @@ router.patch('/users/:id/ban', userController.banUser)
 
 router.post('/login', userController.login)
 
+router.post('/reset-password/:token', userController.resetPassword);
+
+router.post('/upload-image', userController.uploadImage);
+
 module.exports = router;

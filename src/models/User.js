@@ -88,6 +88,8 @@ module.exports = (sequelize) => {
                 type: DataTypes.STRING, 
                 allowNull: true, 
             },
+            resetTokenId: DataTypes.STRING, // Add a new column for the resetTokenId
+            resetTokenData: DataTypes.STRING,
         },
         {
             timestamps: false

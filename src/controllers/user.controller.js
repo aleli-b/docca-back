@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const secret = process.env.SECRET_KEY;
 const saltRounds = 5;
+const { v4: uuidv4 } = require('uuid');
+const upload = require('../utils/cloudinary')
 
 async function getUsers(req, res) {
     const userDB = await User.findAll({
@@ -226,6 +228,107 @@ async function login(req, res) {
     }
 }
 
+async function forgotPassword(req, res) {
+    try {
+        const { email } = req.body;
+
+        // Check if the email exists in the database
+        const user = await User.findOne({ where: { email } });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+
+        // Generate a unique resetTokenId (UUID)
+        const resetTokenId = uuidv4();
+
+        // Generate a password reset JWT token with a 1-hour expiration
+        const jwtPayload = { userId: user.id };
+        const jwtToken = jwt.sign(jwtPayload, 'your-secret-key', { expiresIn: '1h' });
+
+        // Save the resetTokenId and JWT token data in the user model
+        user.resetTokenId = resetTokenId;
+        user.resetTokenData = jwtToken;
+        user.passwordResetExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+        await user.save();
+
+        // Send the password reset email to the user's email
+        const mailOptions = {
+            from: process.env.MAILER_MAIL,
+            to: email,
+            subject: 'Password Reset Request',
+            text: `Click the following link to reset your password: ${process.env.CORS_DOMAIN}/reset-password/${resetTokenId}`,
+            // You can also use HTML content for the email body if you prefer
+            // html: `<p>Click the following link to reset your password: <a href="http://your-frontend-url/reset-password/${resetTokenId}">Reset Password</a></p>`
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error(error);
+                return res.status(500).json({ message: 'Failed to send reset password email.' });
+            } else {
+                console.log('Reset password email sent:', info.response);
+                return res.json({ message: 'Password reset email sent.' });
+            }
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+}
+
+async function resetPassword(req, res) {
+    try {
+        const { newPassword } = req.body;
+        const { token: resetTokenId } = req.params
+
+        // Find the user based on the resetTokenId
+        const user = await User.findOne({ where: { resetTokenId } });
+
+        // Verify the user and the JWT token data
+        if (!user || user.passwordResetExpires < new Date()) {
+            return res.status(400).json({ message: 'Invalid or expired password reset token.' });
+        }
+
+        const decodedToken = jwt.verify(user.resetTokenData, 'your-secret-key');
+        if (!decodedToken || decodedToken.userId !== user.id) {
+            return res.status(400).json({ message: 'Invalid or expired password reset token.' });
+        }
+
+        // Update the user's password
+        const hash = await bcrypt.hash(newPassword, saltRounds);
+        user.password = hash;
+        user.resetTokenId = null;
+        user.resetTokenData = null;
+        user.passwordResetExpires = null;
+
+        await user.save();
+
+        return res.json({ message: 'Password reset successful.' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+}
+
+async function uploadImage(req, res) {
+    try {
+        const userId = req.body.id; // Assuming you have set up authentication and have access to the user object through req.user
+        const imageUrl = await upload(req.body.image);
+
+        // Update the profile_picture_url field in the user model
+        await User.update(
+            { profile_picture_url: imageUrl },
+            { where: { id: userId } }
+        );
+
+        res.send(imageUrl);
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        res.status(500).send(error);
+    }
+}
+
 module.exports = {
     getUsers,
     getUser,
@@ -235,5 +338,8 @@ module.exports = {
     banUser,
     updateUser,
     getUsersByCategory,
-    login
+    login,
+    forgotPassword,
+    resetPassword,
+    uploadImage,
 }
