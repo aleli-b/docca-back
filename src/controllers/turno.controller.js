@@ -3,7 +3,6 @@ const moment = require("moment-timezone");
 const cron = require("node-cron");
 const { Turno, User } = require("../db");
 const { Op } = require("sequelize");
-// const { mercadopago } = require("../utils/mercadoPago");
 
 async function getOccupiedTurnos(req, res) {
   try {

@@ -2,7 +2,6 @@ require('dotenv').config({ path: './.env' });
 const { User } = require('../db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const transporter = require('../utils/mailer');
 const secret = process.env.SECRET_KEY;
 const saltRounds = 5;
 const { v4: uuidv4 } = require('uuid');
