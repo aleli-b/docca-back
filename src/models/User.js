@@ -60,6 +60,10 @@ module.exports = (sequelize) => {
                 type: DataTypes.INTEGER,
                 allowNull: true,
             },
+            subscription: {
+                type: DataTypes.BOOLEAN,
+                allowNull: true,
+            },
             admin: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
