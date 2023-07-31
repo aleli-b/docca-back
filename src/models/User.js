@@ -56,6 +56,10 @@ module.exports = (sequelize) => {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
             },
+            price: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+            },
             admin: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
