@@ -9,7 +9,7 @@ const CORS_DOMAIN = process.env.CORS_DOMAIN;
 mercadopago.configure({
   access_token: MpAccessToken,
 });
-const svHost = process.env.VITE_HOST;
+const { VITE_HOST } = process.env;
 
 async function setPreferences(req, res) {
   const { doctor, user, turno } = req.body;
@@ -35,9 +35,9 @@ async function setPreferences(req, res) {
     ],
     external_reference: `${turno}_${user.id}_${doctor.id}`,
     back_urls: {
-      success: "http://localhost:4000/feedback",
-      failure: "http://localhost:4000/feedback",
-      pending: "http://localhost:5173/",
+      success: `${VITE_HOST}/feedback`,
+      failure: `${VITE_HOST}/feedback`,
+      pending: "",
     },
     binary_mode: true,
     auto_return: "approved",
@@ -64,8 +64,8 @@ async function setPreferencesSubscription(req, res) {
     ],
     external_reference: user.id,
     back_urls: {
-      success: `${svHost}/feedbackSubscription`,
-      failure: `${svHost}/feedbackSubscription`,
+      success: `${VITE_HOST}/feedbackSubscription`,
+      failure: `${VITE_HOST}/feedbackSubscription`,
       pending: "",
     },
     binary_mode: true,
@@ -100,8 +100,8 @@ async function feedback(req, res) {
         console.error(error);
         res.send("Turno no reservado");
       }
-    }else{
-      res.redirect(CORS_DOMAIN)
+    } else {
+      res.redirect(CORS_DOMAIN);
     }
   } catch (error) {
     console.error(error);
