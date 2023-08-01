@@ -62,7 +62,7 @@ module.exports = (sequelize) => {
             },
             subscription: {
                 type: DataTypes.BOOLEAN,
-                allowNull: true,
+                defaultValue: false,
             },
             admin: {
                 type: DataTypes.BOOLEAN,
