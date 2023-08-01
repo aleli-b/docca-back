@@ -1,8 +1,11 @@
+const { addTurno } = require("../controllers/turno.controller");
 require("dotenv").config({ path: "./.env" });
 const bodyParser = require("body-parser");
 const mercadopago = require("mercadopago");
+const { User } = require("../db");
 const axios = require("axios");
 const MpAccessToken = process.env.MpAccessToken;
+const CORS_DOMAIN = process.env.CORS_DOMAIN;
 mercadopago.configure({
   access_token: MpAccessToken,
 });
@@ -31,8 +34,8 @@ async function setPreferences(req, res) {
       },
     ],
     back_urls: {
-      success: "http://localhost:5173/",
-      failure: "http://localhost:5173/",
+      success: "http://localhost:4000/feedback",
+      failure: "http://localhost:4000/feedback",
       pending: "http://localhost:5173/",
     },
     binary_mode: true,
@@ -44,11 +47,9 @@ async function setPreferences(req, res) {
     .catch((error) => res.status(400).send({ error: error.message }));
 }
 
-
 //Esta función se encarga de crear el id de Referencia para que se genere el checkout de MP
 async function setPreferencesSubscription(req, res) {
   const { user, price } = req.body;
-
 
   let preference = {
     items: [
@@ -59,19 +60,15 @@ async function setPreferencesSubscription(req, res) {
         currency_id: "ARS",
       },
     ],
-    payer:{
-      id: user.id
-    }
-    ,
+    external_reference: user.id,
     back_urls: {
-      success: `http://localhost:4000/feedbackSubscription`,
-      failure: `http://localhost:4000/feedbackSubscription`,
-      pending: "http://localhost:4000/feedbackSubscription",
+      success: `${svHost}/feedbackSubscription`,
+      failure: `${svHost}/feedbackSubscription`,
+      pending: "",
     },
     binary_mode: true,
     auto_return: "approved",
-    
-    }
+  };
 
   mercadopago.preferences
     .create(preference)
@@ -84,18 +81,29 @@ async function feedback(req, res) {
     Payment: req.query.payment_id,
     Status: req.query.status,
     MerchantOrder: req.query.merchant_order_id,
-  };
-  res.json(dataPay)
-}
-
-async function feedbackSubscription(req, res) {
-  let dataPay = {
-    Payment: req.query.payment_id,
-    Status: req.query.status,
-    MerchantOrder: req.query.merchant_order_id,
     ExternalReference: req.query.external_reference,
   };
-  res.json(dataPay)
+  res.json(dataPay);
+}
+async function feedbackSubscription(req, res) {
+  try {
+    let dataPay = {
+      Payment: req.query.payment_id,
+      Status: req.query.status,
+      MerchantOrder: req.query.merchant_order_id,
+      ExternalReference: req.query.external_reference,
+    };
+    const user = await User.findByPk(dataPay.ExternalReference);
+    if (dataPay.Status === "approved") {
+      await user.update({ subscription: true });
+      res.redirect(CORS_DOMAIN);
+    } else {
+      res.redirect(CORS_DOMAIN);
+    }
+  } catch (error) {
+    console.error(error);
+    return res.send("El ID no existe");
+  }
 }
 
 module.exports = {
@@ -103,6 +111,4 @@ module.exports = {
   feedback,
   setPreferencesSubscription,
   feedbackSubscription,
-
-
 };
