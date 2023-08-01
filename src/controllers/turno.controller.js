@@ -14,8 +14,8 @@ async function getOccupiedTurnos(req, res) {
   }
 }
 
-async function addTurno(req, res) {
-  const { date, userId, doctorId, price } = req.body;
+async function addTurno(userData) {
+  const { date, userId, doctorId } = userData;
   console.log("primera", date);
   console.log(userId, doctorId);
   try {
@@ -30,19 +30,19 @@ async function addTurno(req, res) {
 
     if (doctorCheck && date === doctorCheck.date) {
       console.log("The Doctor already has a turno");
-      return res.status(401).send("The Doctor already has a turno");
+      return("The Doctor already has a turno");
     }
 
     if (pacienteHasTurno) {
       console.log("The User already has a turno");
-      return res.status(400).send("The User already has a turno");
+      return("The User already has a turno");
     }
 
-    const turno = await Turno.create({ date, userId, doctorId, price });
-    res.send({ turno });
+    const turno = await Turno.create({ date, userId, doctorId });
+    return(turno);
   } catch (error) {
     // console.error(error);
-    res.status(500).send("Error creating turno");
+    return("Error creating turno");
   }
 }
 

@@ -33,12 +33,14 @@ async function setPreferences(req, res) {
         currency_id: "ARS",
       },
     ],
+    external_reference: `${turno}_${user.id}_${doctor.id}`,
     back_urls: {
       success: "http://localhost:4000/feedback",
       failure: "http://localhost:4000/feedback",
       pending: "http://localhost:5173/",
     },
     binary_mode: true,
+    auto_return: "approved",
   };
 
   mercadopago.preferences
@@ -77,13 +79,34 @@ async function setPreferencesSubscription(req, res) {
 }
 
 async function feedback(req, res) {
-  let dataPay = {
-    Payment: req.query.payment_id,
-    Status: req.query.status,
-    MerchantOrder: req.query.merchant_order_id,
-    ExternalReference: req.query.external_reference,
-  };
-  res.json(dataPay);
+  try {
+    let dataPay = {
+      Payment: req.query.payment_id,
+      Status: req.query.status,
+      MerchantOrder: req.query.merchant_order_id,
+      ExternalReference: req.query.external_reference,
+    };
+    references = dataPay.ExternalReference.split("_");
+    const userData = {
+      date: references[0],
+      userId: references[1],
+      doctorId: references[2],
+    };
+    if (dataPay.Status === "approved") {
+      try {
+        addTurno(userData);
+        res.redirect(CORS_DOMAIN);
+      } catch (error) {
+        console.error(error);
+        res.send("Turno no reservado");
+      }
+    }else{
+      res.redirect(CORS_DOMAIN)
+    }
+  } catch (error) {
+    console.error(error);
+    return res.send("Ocurrio un error");
+  }
 }
 async function feedbackSubscription(req, res) {
   try {
