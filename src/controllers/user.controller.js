@@ -5,7 +5,8 @@ const jwt = require('jsonwebtoken');
 const secret = process.env.SECRET_KEY;
 const saltRounds = 5;
 const { v4: uuidv4 } = require('uuid');
-const upload = require('../utils/cloudinary')
+const upload = require('../utils/cloudinary');
+const transporter = require('../utils/mailer');
 
 async function getUsers(req, res) {
     const userDB = await User.findAll({
