@@ -5,8 +5,8 @@ const jwt = require('jsonwebtoken');
 const secret = process.env.SECRET_KEY;
 const saltRounds = 5;
 const { v4: uuidv4 } = require('uuid');
-const upload = require('../utils/cloudinary');
 const transporter = require('../utils/mailer');
+const aws_upload = require('../utils/S3.js');
 
 async function getUsers(req, res) {
     const userDB = await User.findAll({
@@ -314,21 +314,18 @@ async function resetPassword(req, res) {
     }
 }
 
-async function uploadImage(req, res) {
+async function uploadImage(req, res){
     try {
-        const userId = req.body.id; // Assuming you have set up authentication and have access to the user object through req.user
-        const imageUrl = await upload(req.body.image);
-
-        // Update the profile_picture_url field in the user model
+        const imageUrl = await aws_upload(req.body);
+        const userId = req.body.id;
         await User.update(
-            { profile_picture_url: imageUrl },
-            { where: { id: userId } }
-        );
-
-        res.send(imageUrl);
+            { profile_picture_url: imageUrl.url },
+            { where: { id: userId }}
+        )        
+        return res.status(200).send(imageUrl)
     } catch (error) {
-        console.error('Error uploading image:', error);
-        res.status(500).send(error);
+        console.error(error);
+        return res.status(400).send('Ha habido un error.')
     }
 }
 
