@@ -12,17 +12,17 @@ const { BACK_URL, CORS_DOMAIN } = process.env;
 
 async function setPreferences(req, res) {
   const { doctor, user, turno } = req.body;
-  let data = {
-    date: turno,
-    userId: user.id,
-    doctorId: doctor.id,
-    price: Number(doctor.price),
-  };
-  const queryString = new URLSearchParams(data).toString();
-  const url = () => {
-    axios.post(`${BACK_URL}/turnos`, queryString);
-  };
-
+  // let data = {
+  //   date: turno,
+  //   userId: user.id,
+  //   doctorId: doctor.id,
+  //   price: Number(doctor.price),
+  // };
+  // const queryString = new URLSearchParams(data).toString();
+  // const url = () => {
+  //   axios.post(`${BACK_URL}/turnos`, queryString);
+  // };
+  console.log(doctor, user, turno)
   let preference = {
     items: [
       {
@@ -41,11 +41,11 @@ async function setPreferences(req, res) {
     binary_mode: true,
     auto_return: "approved",
   };
-
+  console.log(preference)
   mercadopago.preferences
     .create(preference)
     .then((response) => res.status(200).send({ response }))
-    .catch((error) => res.status(400).send({ error: error.message }));
+    .catch((error) => res.status(400).send({ error: error.message }, console.log(error)));
 }
 
 //Esta función se encarga de crear el id de Referencia para que se genere el checkout de MP
