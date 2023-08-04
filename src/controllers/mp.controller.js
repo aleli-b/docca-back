@@ -5,11 +5,10 @@ const mercadopago = require("mercadopago");
 const { User } = require("../db");
 const axios = require("axios");
 const MpAccessToken = process.env.MpAccessToken;
-const CORS_DOMAIN = process.env.CORS_DOMAIN;
 mercadopago.configure({
   access_token: MpAccessToken,
 });
-const svHost = process.env.VITE_HOST;
+const { BACK_URL, CORS_DOMAIN } = process.env;
 
 async function setPreferences(req, res) {
   const { doctor, user, turno } = req.body;
@@ -21,7 +20,7 @@ async function setPreferences(req, res) {
   };
   const queryString = new URLSearchParams(data).toString();
   const url = () => {
-    axios.post(`${svHost}/turnos`, queryString);
+    axios.post(`${BACK_URL}/turnos`, queryString);
   };
 
   let preference = {
@@ -35,9 +34,9 @@ async function setPreferences(req, res) {
     ],
     external_reference: `${turno}_${user.id}_${doctor.id}`,
     back_urls: {
-      success: "http://localhost:4000/feedback",
-      failure: "http://localhost:4000/feedback",
-      pending: "http://localhost:5173/",
+      success: `${BACK_URL}/feedback`,
+      failure: `${BACK_URL}/feedback`,
+      pending: CORS_DOMAIN,
     },
     binary_mode: true,
     auto_return: "approved",
@@ -64,8 +63,8 @@ async function setPreferencesSubscription(req, res) {
     ],
     external_reference: user.id,
     back_urls: {
-      success: `http://localhost:4000/feedbackSubscription`,
-      failure: `http://localhost:4000/feedbackSubscription`,
+      success: `${BACK_URL}/feedbackSubscription`,
+      failure: `${BACK_URL}/feedbackSubscription`,
       pending: "",
     },
     binary_mode: true,
