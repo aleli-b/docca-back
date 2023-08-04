@@ -21,7 +21,7 @@ server.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 server.use(bodyParser.json({ limit: "50mb" }));
 server.use(morgan("dev"));
 server.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', CORS_DOMAIN, altDomain); // Replace this with your frontend domain
+    res.header('Access-Control-Allow-Origin', CORS_DOMAIN, altDomain, "https://www.mercadopago.com.mx/", "https://mercadopago.com.mx/"); // Replace this with your frontend domain
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header(
       'Access-Control-Allow-Headers',
