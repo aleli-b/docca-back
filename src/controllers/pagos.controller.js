@@ -3,20 +3,16 @@ const bodyParser = require("body-parser");
 const { Pago } = require("../db");
 const axios = require("axios");
 
-
-async function setPago(userData, idPagoMP) {
-    const { date, userId, doctorId} = userData;
-    const {idPago} = idPagoMP;
-    try {
-      const pago = await Pago.create({ idPago, userId, doctorId });
-      return(pago);
-    } catch (error) {
-      // console.error(error);
-      return("Error al registrar el pago en la Base de Datos");
-    }
+async function setPago(userData) {
+  const { date, userId, doctorId, paymentId } = userData;
+  try {
+    const pago = await Pago.create({ paymentId, userId, doctorId });
+    return ;
+  } catch (error) {
+    console.error(error);
   }
+}
 
-  module.exports = {
-    setPago,
-  };
-  
+module.exports = {
+  setPago,
+};
