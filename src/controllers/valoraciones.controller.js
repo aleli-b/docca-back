@@ -37,11 +37,11 @@ async function setValoration(userData) {
 }
 
 async function getValoration(req, res) {
-  const { doctor } = req.body;
+  console.log(req.body.doctorId)
   try {
     const valoraciones = await Valoraciones.findAll({
       where: {
-        doctorId: req.body.id
+        doctorId: req.body.doctorId
       },
     });
 
