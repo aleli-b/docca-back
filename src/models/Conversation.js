@@ -12,7 +12,6 @@ module.exports = (sequelize) => {
         primaryKey: true,
         allowNull:false,
       },
-      // Make sure to use DataTypes.UUID for participant1Id and participant2Id
       participant1Id: {
         type: DataTypes.UUID,
         allowNull: false,

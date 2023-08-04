@@ -55,24 +55,21 @@ let capsEntries = entries.map((entry) => [
 ]);
 sequelize.models = Object.fromEntries(capsEntries);
 
-const { User, Turno, Message, Conversation, Pago, Valoraciones } = sequelize.models;
+const { User, Turno, Message, Conversation, Labtest, Pago, Valoraciones} = sequelize.models;
 
 User.hasMany(Turno, {as: 'turno', foreignKey: 'userId'});
 Turno.belongsTo(User, {as: 'doctor', foreignKey: 'doctorId'});
 Turno.belongsTo(User, {as: 'paciente', foreignKey: 'userId'});
 
-// User and Message association
 User.hasMany(Message, { as: 'sentMessages', foreignKey: 'senderId' });
 User.hasMany(Message, { as: 'receivedMessages', foreignKey: 'receiverId' });
 
 Message.belongsTo(User, { as: 'sender', foreignKey: 'senderId' });
 Message.belongsTo(User, { as: 'receiver', foreignKey: 'receiverId' });
 
-// Conversation and Message association
 Conversation.hasMany(Message, { as: 'messages', foreignKey: 'conversationId' });
 Message.belongsTo(Conversation, { as: 'conversation', foreignKey: 'conversationId' });
 
-// Conversation and User association (many-to-many)
 Conversation.belongsTo(User, {
   foreignKey: 'participant1Id',
   as: 'participant1',
@@ -92,6 +89,36 @@ User.hasMany(Conversation, {
   foreignKey: 'participant2Id',
   as: 'participant2Conversations',
 });
+
+User.hasMany(Labtest, {
+  foreignKey: 'doctorId',
+  as: 'doctorLabtests',
+})
+
+User.hasMany(Labtest, {
+  foreignKey: 'labId',
+  as: 'labLabtests',
+})
+
+User.hasMany(Labtest, {
+  foreignKey: 'userId',
+  as: 'patientLabtests',
+})
+
+Labtest.belongsTo(User, {
+  foreignKey: 'doctorId',
+  as: 'labtestDoctor',
+})
+
+Labtest.belongsTo(User, {
+  foreignKey: 'labId',
+  as: 'labtestLab',
+})
+
+Labtest.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'labtestPatient',
+})
 
 
 module.exports = {
