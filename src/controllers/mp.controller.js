@@ -22,7 +22,6 @@ async function setPreferences(req, res) {
   // const url = () => {
   //   axios.post(`${BACK_URL}/turnos`, queryString);
   // };
-  console.log(doctor, user, turno)
   let preference = {
     items: [
       {
