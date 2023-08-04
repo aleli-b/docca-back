@@ -45,7 +45,7 @@ async function setPreferences(req, res) {
   mercadopago.preferences
     .create(preference)
     .then((response) => res.status(200).send({ response }))
-    .catch((error) => res.status(400).send({ error: error.message }, console.log(error)));
+    .catch((error) => {res.status(400).send({ error: error.message }); console.log(error)});
 }
 
 //Esta función se encarga de crear el id de Referencia para que se genere el checkout de MP
