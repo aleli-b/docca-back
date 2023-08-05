@@ -6,7 +6,7 @@ const secret = process.env.SECRET_KEY;
 const saltRounds = 5;
 const { v4: uuidv4 } = require('uuid');
 const transporter = require('../utils/mailer');
-const aws_upload = require('../utils/S3.js');
+const { aws_upload_img } = require('../utils/S3.js');
 
 async function getUsers(req, res) {
     const userDB = await User.findAll({
@@ -316,7 +316,7 @@ async function resetPassword(req, res) {
 
 async function uploadImage(req, res){
     try {
-        const imageUrl = await aws_upload(req.body);
+        const imageUrl = await aws_upload_img(req.body);
         const userId = req.body.id;
         await User.update(
             { profile_picture_url: imageUrl.url },

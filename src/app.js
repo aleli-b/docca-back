@@ -8,6 +8,7 @@ const turno_routes = require("./routes/turno.routes.js");
 const message_routes = require("./routes/message.routes.js");
 const mp_routes = require("./routes/mp.routes.js")
 const valoraciones_routes = require("./routes/valoracion.routes.js")
+const labtest_routes = require("./routes/labtest.routes.js")
 const { CORS_DOMAIN } = process.env;
 
 const altDomain = `www.${CORS_DOMAIN}`
@@ -32,7 +33,7 @@ server.use((req, res, next) => {
     next();
   });
 
-server.use("/", user_routes, turno_routes, message_routes, mp_routes, valoraciones_routes);
+server.use("/", user_routes, turno_routes, message_routes, mp_routes, valoraciones_routes, labtest_routes);
 
 server.use((err, req, res, next) => {
   const status = err.status || 500;
