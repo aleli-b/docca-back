@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const mercadopago = require("mercadopago");
 const { User } = require("../db");
 const axios = require("axios");
+const { setPago } = require("../controllers/pagos.controller");
 const MpAccessToken = process.env.MpAccessToken;
 mercadopago.configure({
   access_token: MpAccessToken,
@@ -89,17 +90,19 @@ async function feedback(req, res) {
       date: references[0],
       userId: references[1],
       doctorId: references[2],
+      paymentId: dataPay.Payment,
     };
     if (dataPay.Status === "approved") {
       try {
         addTurno(userData);
+        setPago(userData);
         res.redirect(CORS_DOMAIN);
       } catch (error) {
         console.error(error);
         res.send("Turno no reservado");
       }
-    }else{
-      res.redirect(CORS_DOMAIN)
+    } else {
+      res.redirect(CORS_DOMAIN);
     }
   } catch (error) {
     console.error(error);
