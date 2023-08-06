@@ -2,33 +2,44 @@ require("dotenv").config({ path: "./.env" });
 const { Turno, User, Labtest } = require("../db");
 const { aws_upload_pdf } = require("../utils/S3")
 
-async function getLabtest(req, res) {
+async function getLabtests(req, res) {
     try {
-        const { userId, doctorId, labId } = req.body;
-        let test;
-        if(userId){
-            test = Labtest.findOne({
-                where: {
-                    userId: userId      
-                }
-            })
-        } else if(doctorId){
-            test = Labtest.findOne({
-                where: {
-                    doctorId: doctorId      
-                }
-            })
-        } else {
-            test = Labtest.findOne({
-                where: {
-                    labId: labId      
-                }
-            })
+        const { userId, doctorId, labId } = req.query;
+        if (userId === undefined && doctorId === undefined && labId === undefined) {
+            return res.status(400).send('No se ha enviado la información adecuada');
         }
-        return res.status(200).send(test)
+
+        let test;
+        if (userId) {
+            test = await Labtest.findAll({
+                where: {
+                    userId: userId
+                }
+            });
+        } else if (doctorId) {
+            test = await Labtest.findAll({
+                where: {
+                    doctorId: doctorId
+                }
+            });
+        } else if (labId) {
+            test = await Labtest.findAll({
+                where: {
+                    labId: labId
+                },
+                include: ["labtestDoctor", "labtestPatient"],
+            });
+        }
+
+        if (test) {
+            return res.status(200).send(test);
+        } else {
+            return res.status(404).send('No se encontró ningún resultado');
+        }
+
     } catch (error) {
-        console.log(error)
-        return res.status(400).send('Ha habido un error')
+        console.log(error);
+        return res.status(500).send('Ha habido un error');
     }
 }
 
@@ -51,6 +62,6 @@ async function uploadLabtest(req, res) {
 }
 
 module.exports = {
-    getLabtest,
+    getLabtests,
     uploadLabtest,
 }
