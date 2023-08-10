@@ -123,25 +123,37 @@ Labtest.belongsTo(User, {
   as: "labtestPatient",
 });
 
-User.hasMany(Pago, {
-  foreignKey: "userId",
-  as: "patientPayer",
+// User.hasMany(Pago, {
+//   foreignKey: "userId",
+//   as: "patientPayer",
+// });
+
+// User.hasMany(Pago, {
+//   foreignKey: "doctorId",
+//   as: "doctorPaid",
+// });
+
+// Pago.belongsTo(User, {
+//   foreignKey: "userId",
+//   as: "payerPatient",
+// });
+
+// Pago.belongsTo(User, {
+//   foreignKey: "doctorId",
+//   as: "paidDoctor",
+// });
+
+Pago.belongsTo(Turno, {
+  foreignKey: "turnoId",
+  as: "turnoPay",
 });
 
-User.hasMany(Pago, {
-  foreignKey: "doctorId",
-  as: "doctorPaid",
+Turno.hasOne(Pago, {
+  foreignKey: "turnoId",
+  as: "payTurno",
 });
 
-Pago.belongsTo(User, {
-  foreignKey: "userId",
-  as: "payerPatient",
-});
 
-Pago.belongsTo(User, {
-  foreignKey: "doctorId",
-  as: "paidDoctor",
-});
 
 module.exports = {
   ...sequelize.models,

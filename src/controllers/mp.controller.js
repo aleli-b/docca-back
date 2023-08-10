@@ -41,7 +41,6 @@ async function setPreferences(req, res) {
     binary_mode: true,
     auto_return: "approved",
   };
-  console.log(preference)
   mercadopago.preferences
     .create(preference)
     .then((response) => res.status(200).send({ response }))

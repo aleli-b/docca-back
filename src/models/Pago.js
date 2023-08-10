@@ -10,16 +10,20 @@ module.exports = (sequelize) => {
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4,
       },
-      userId: {
+      turnoId: {
         type: DataTypes.UUID,
-        allowNull: false,
-        defaultValue: DataTypes.UUIDV4,
+        allowNull: true,
       },
-      doctorId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        defaultValue: DataTypes.UUIDV4,
-      },
+      // userId: {
+      //   type: DataTypes.UUID,
+      //   allowNull: false,
+      //   defaultValue: DataTypes.UUIDV4,
+      // },
+      // doctorId: {
+      //   type: DataTypes.UUID,
+      //   allowNull: false,
+      //   defaultValue: DataTypes.UUIDV4,
+      // },
     },
     {
       timestamps: true,

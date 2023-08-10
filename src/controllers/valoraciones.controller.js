@@ -36,6 +36,8 @@ async function setValoration(userData) {
   }
 }
 
+
+
 async function getValoration(req, res) {
   console.log(req.body.doctorId)
   try {
