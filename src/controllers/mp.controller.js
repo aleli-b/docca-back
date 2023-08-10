@@ -93,8 +93,8 @@ async function feedback(req, res) {
     };
     if (dataPay.Status === "approved") {
       try {
-        addTurno(userData);
-        setPago(userData);
+        const turnoId = await addTurno(userData);
+        setPago(userData, turnoId);
         res.redirect(CORS_DOMAIN);
       } catch (error) {
         console.error(error);

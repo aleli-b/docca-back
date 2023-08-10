@@ -39,7 +39,7 @@ async function addTurno(userData) {
     }
 
     const turno = await Turno.create({ date, userId, doctorId });
-    return(turno);
+    return(turno.id);
   } catch (error) {
     // console.error(error);
     return("Error creating turno");
@@ -90,9 +90,9 @@ async function getDoctorTurno(req, res) {
   }
 }
 
-async function deletePastTurnos() {
+async function deletePastTurnos(dateString) {
   try {
-    const currentDateUTC = moment.utc().format("YYYY-MM-DD HH:mm");
+    const currentDateUTC = moment.utc(dateString, "YYYY-MM-DD HH:mm").toDate();
 
     const deletedTurnos = await Turno.destroy({
       where: {

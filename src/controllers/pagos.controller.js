@@ -3,10 +3,10 @@ const bodyParser = require("body-parser");
 const { Pago, User, Turno } = require("../db");
 const axios = require("axios");
 
-async function setPago(userData) {
-  const { date, userId, doctorId, paymentId } = userData;
+async function setPago(userData, turnoId) {
+  const { paymentId } = userData;
   try {
-    const pago = await Pago.create({ paymentId, userId, doctorId });
+    const pago = await Pago.create({ paymentId, turnoId: turnoId });
     return;
   } catch (error) {
     console.error(error);
@@ -14,7 +14,7 @@ async function setPago(userData) {
 }
 
 async function getPago(req, res) {
-  const { pagoId } = req.params;
+  const pagoId = req.params.pagoId;
   console.log("este es ura" + " "+ pagoId)
   try {
     const pago = await Pago.findAll({ 
@@ -23,7 +23,6 @@ async function getPago(req, res) {
         include: [{
           model: Turno,
           as: "turnoPay",
-          attributes: {
             include: [
               {
                 model: User,
@@ -31,7 +30,7 @@ async function getPago(req, res) {
               }
             ]
           }
-        }]
+        ]
       });
     return res.status(200).send(pago);
   } catch (error) {

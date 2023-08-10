@@ -4,7 +4,7 @@ module.exports = (sequelize) => {
   sequelize.define(
     "pago",
     {
-      idPagoMP: {
+      id: {
         type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
