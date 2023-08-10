@@ -13,16 +13,6 @@ const { BACK_URL, CORS_DOMAIN } = process.env;
 
 async function setPreferences(req, res) {
   const { doctor, user, turno } = req.body;
-  // let data = {
-  //   date: turno,
-  //   userId: user.id,
-  //   doctorId: doctor.id,
-  //   price: Number(doctor.price),
-  // };
-  // const queryString = new URLSearchParams(data).toString();
-  // const url = () => {
-  //   axios.post(`${BACK_URL}/turnos`, queryString);
-  // };
   let preference = {
     items: [
       {

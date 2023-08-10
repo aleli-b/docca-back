@@ -14,16 +14,6 @@ module.exports = (sequelize) => {
         type: DataTypes.UUID,
         allowNull: true,
       },
-      // userId: {
-      //   type: DataTypes.UUID,
-      //   allowNull: false,
-      //   defaultValue: DataTypes.UUIDV4,
-      // },
-      // doctorId: {
-      //   type: DataTypes.UUID,
-      //   allowNull: false,
-      //   defaultValue: DataTypes.UUIDV4,
-      // },
     },
     {
       timestamps: true,
