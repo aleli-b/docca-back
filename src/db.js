@@ -133,6 +133,10 @@ Turno.hasOne(Pago, {
   as: "payTurno",
 });
 
+Labtest.belongsTo(Turno)
+
+Turno.hasMany(Labtest)
+
 
 module.exports = {
   ...sequelize.models,
