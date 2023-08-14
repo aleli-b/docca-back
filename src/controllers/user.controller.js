@@ -76,6 +76,8 @@ async function addUser(req, res) {
     let lastName = req.body.lastName;
     let age = req.body.age;
     let email = req.body.email;
+    let country = req.body.country;
+    let state = req.body.state;
     let password = req.body.password;
     let userType = req.body.userType;
     let category = req.body.category;
@@ -93,6 +95,8 @@ async function addUser(req, res) {
             lastName: lastName,
             age: age,
             email: email,
+            country: country,
+            state: state,
             password: password,
             userType: userType,
             category: category,

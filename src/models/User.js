@@ -19,7 +19,7 @@ module.exports = (sequelize) => {
                 allowNull: false,
             },
             age: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.DATEONLY,
                 allowNull: false,
             },
             email: {
@@ -37,6 +37,14 @@ module.exports = (sequelize) => {
             phone: {
                 type: DataTypes.STRING,
                 allowNull: true,
+            },
+            country: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            state: {
+                type: DataTypes.STRING,
+                allowNull: false,
             },
             adress: {
                 type: DataTypes.STRING,

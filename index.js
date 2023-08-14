@@ -7,7 +7,7 @@ const { CORS_DOMAIN } = process.env;
 
 require('dotenv').config();
 
-const port = process.env.PORT || 4000; // Use a default port (e.g., 3000) if PORT is not specified in the environment
+const port = process.env.PORT || 4000;
 
 const httpServer = http.createServer(app);
 const io = socketIO(httpServer, {
@@ -17,10 +17,8 @@ const io = socketIO(httpServer, {
   }
 });
 
-// Initialize the socket connection handling
 handleSocketConnection(io);
 
-// Sync the database and start the server
 db.sync({ alter: true })
   .then(() => {
     console.log('Database synced successfully');
