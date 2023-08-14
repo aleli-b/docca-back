@@ -51,23 +51,39 @@ async function getLabs(req, res) {
     return res.status(200).json(userDB)
 }
 
-async function getUsersByCategory(req, res) {
+async function getUsersByFilters(req, res) {
     try {
-        const category = req.params.category;
+        const { category, province } = req.query;
+        let whereClause = {};
+
+        if (category != '') {
+            whereClause.category = category;
+        }
+
+        if (province != '') {
+            whereClause.state = province;
+        }
+
         const users = await User.findAll({
-            where: {
-                category: category,
-            },
+            where: whereClause,
         });
 
-        if (!users) {
-            return res.status(200).json({ error: `No se encontraron usuarios en la categoría ${category}` });
+        if (!users || users.length === 0) {
+            let errorMessage = "No se encontraron usuarios";
+            if (category && province) {
+                errorMessage += ` en la categoría ${category} y provincia ${province}`;
+            } else if (category) {
+                errorMessage += ` en la categoría ${category}`;
+            } else if (province) {
+                errorMessage += ` en la provincia ${province}`;
+            }
+            return res.status(200).json({ error: errorMessage });
         }
 
         res.status(200).json(users);
     } catch (error) {
-        console.log(error)
-        res.status(400).send({ ok: false })
+        console.log(error);
+        res.status(400).send({ ok: false });
     }
 }
 
@@ -341,7 +357,7 @@ module.exports = {
     addUser,
     banUser,
     updateUser,
-    getUsersByCategory,
+    getUsersByFilters,
     login,
     forgotPassword,
     resetPassword,
