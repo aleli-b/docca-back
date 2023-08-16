@@ -51,23 +51,39 @@ async function getLabs(req, res) {
     return res.status(200).json(userDB)
 }
 
-async function getUsersByCategory(req, res) {
+async function getUsersByFilters(req, res) {
     try {
-        const category = req.params.category;
+        const { category, province } = req.query;
+        let whereClause = {};
+
+        if (category != '') {
+            whereClause.category = category;
+        }
+
+        if (province != '') {
+            whereClause.state = province;
+        }
+
         const users = await User.findAll({
-            where: {
-                category: category,
-            },
+            where: whereClause,
         });
 
-        if (!users) {
-            return res.status(200).json({ error: `No se encontraron usuarios en la categoría ${category}` });
+        if (!users || users.length === 0) {
+            let errorMessage = "No se encontraron usuarios";
+            if (category && province) {
+                errorMessage += ` en la categoría ${category} y provincia ${province}`;
+            } else if (category) {
+                errorMessage += ` en la categoría ${category}`;
+            } else if (province) {
+                errorMessage += ` en la provincia ${province}`;
+            }
+            return res.status(200).json({ error: errorMessage });
         }
 
         res.status(200).json(users);
     } catch (error) {
-        console.log(error)
-        res.status(400).send({ ok: false })
+        console.log(error);
+        res.status(400).send({ ok: false });
     }
 }
 
@@ -76,6 +92,8 @@ async function addUser(req, res) {
     let lastName = req.body.lastName;
     let age = req.body.age;
     let email = req.body.email;
+    let country = req.body.country;
+    let state = req.body.state;
     let password = req.body.password;
     let userType = req.body.userType;
     let category = req.body.category;
@@ -93,6 +111,8 @@ async function addUser(req, res) {
             lastName: lastName,
             age: age,
             email: email,
+            country: country,
+            state: state,
             password: password,
             userType: userType,
             category: category,
@@ -337,7 +357,7 @@ module.exports = {
     addUser,
     banUser,
     updateUser,
-    getUsersByCategory,
+    getUsersByFilters,
     login,
     forgotPassword,
     resetPassword,

@@ -11,7 +11,7 @@ router.get('/doctors', userController.getDoctors)
 
 router.get('/labs', userController.getLabs)
 
-router.get('/users/categories/:category', userController.getUsersByCategory);
+router.get('/users/filter', userController.getUsersByFilters);
 
 router.post('/users', userController.addUser)
 
