@@ -19,7 +19,7 @@ module.exports = (sequelize) => {
                 allowNull: false,
             },
             age: {
-                type: DataTypes.DATEONLY,
+                type: DataTypes.STRING,
                 allowNull: false,
             },
             email: {
