@@ -138,6 +138,20 @@ Labtest.belongsTo(Turno)
 Turno.hasMany(Labtest)
 
 
+Valoraciones.belongsTo(Turno, {
+  foreignKey: "turnoId",
+  as: "turno"
+})
+
+Turno.hasOne(Valoraciones,{
+  foreignKey: "turnoId",
+  as: "valoracion"
+})
+
+
+
+
+
 module.exports = {
   ...sequelize.models,
   db: sequelize,

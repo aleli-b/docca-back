@@ -1,49 +1,67 @@
 require("dotenv").config({ path: "./.env" });
 const bodyParser = require("body-parser");
 const mercadopago = require("mercadopago");
-const { Valoraciones } = require("../db");
+const { Valoraciones, Turno } = require("../db");
 const axios = require("axios");
 
-async function setValoration(userData) {
-  const { date, userId, doctorId } = userData;
-  console.log("primera", date);
-  console.log(userId, doctorId);
+const setValoration = async (req, res) => {
   try {
-    const pacienteHasTurno = await Turno.findOne({
-      where: { userId },
-      include: "paciente",
-    });
-    const doctorCheck = await Turno.findOne({
-      where: { doctorId },
-      include: "doctor",
+    const turno = await Turno.findOne({
+      where: {
+        id: req.body.turnoId,
+      },
     });
 
-    if (doctorCheck && date === doctorCheck.date) {
-      console.log("The Doctor already has a turno");
-      return "The Doctor already has a turno";
+    if (!turno) {
+      return res
+        .status(404)
+        .json(`El turno con el ID ${req.body.turnoId} no existe`);
+    } else {
+      const getValoration = await Valoraciones.findOne({
+        where: {
+          turnoId: req.body.turnoId,
+        },
+      });
+      if (!getValoration) {
+        const valoration = await Valoraciones.create({
+          turnoId: req.body.turnoId,
+          userId: req.body.userId,
+          doctorId: req.body.doctorId,
+          valoracion: req.body.valoracion,
+          reseña: req.body.reseña,
+        });
+        res.status(200).json("Valoración guardada correctamente");
+        return valoration;
+      } else {
+        const valoration = await Valoraciones.update(
+          {
+            userId: req.body.userId,
+            doctorId: req.body.doctorId,
+            valoracion: req.body.valoracion,
+            reseña: req.body.reseña,
+          },
+          {
+            where: {
+              turnoId: req.body.turnoId,
+            },
+          }
+        );
+        res.status(200).json("Valoración actualizada correctamente");
+        return valoration;
+      }
     }
-
-    if (pacienteHasTurno) {
-      console.log("The User already has a turno");
-      return "The User already has a turno";
-    }
-
-    const turno = await Turno.create({ date, userId, doctorId });
-    return turno;
   } catch (error) {
-    // console.error(error);
-    return "Error creating turno";
+    console.log(error);
+    res.status(400).send("Error al actualizar estado de usuario");
   }
-}
-
-
+};
 
 async function getValoration(req, res) {
-  console.log(req.body.doctorId)
+  console.log(req.body.doctorId);
   try {
     const valoraciones = await Valoraciones.findAll({
       where: {
-        doctorId: req.body.doctorId
+        doctorId: req.body.doctorId,
       },
     });
 
