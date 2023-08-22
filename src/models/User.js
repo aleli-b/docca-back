@@ -72,6 +72,10 @@ module.exports = (sequelize) => {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
             },
+            cedulaVerified: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
             admin: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
@@ -135,6 +139,10 @@ module.exports = (sequelize) => {
             profile_picture_url: {
                 type: DataTypes.STRING,
                 allowNull: true,
+            },
+            cedula_url: {
+                type: DataTypes.STRING,
+                allowNull: true,  
             },
             resetTokenId: DataTypes.STRING, // Add a new column for the resetTokenId
             resetTokenData: DataTypes.STRING,

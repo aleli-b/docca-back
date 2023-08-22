@@ -6,7 +6,7 @@ const secret = process.env.SECRET_KEY;
 const saltRounds = 5;
 const { v4: uuidv4 } = require('uuid');
 const transporter = require('../utils/mailer');
-const { aws_upload_img } = require('../utils/S3.js');
+const { aws_upload_img, aws_upload_ced } = require('../utils/S3.js');
 
 async function getUsers(req, res) {
     const userDB = await User.findAll({
@@ -349,6 +349,21 @@ async function uploadImage(req, res){
     }
 }
 
+async function uploadCed(req, res){
+    try {
+        const cedUrl = await aws_upload_ced(req.body);
+        const userId = req.body.id;
+        await User.update(
+            { cedula_url: cedUrl.url },
+            { where: { id: userId }}
+        )        
+        return res.status(200).send(cedUrl)
+    } catch (error) {
+        console.error(error);
+        return res.status(400).send('Ha habido un error.')
+    }
+}
+
 module.exports = {
     getUsers,
     getUser,
@@ -362,4 +377,5 @@ module.exports = {
     forgotPassword,
     resetPassword,
     uploadImage,
+    uploadCed,
 }

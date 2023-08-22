@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk');
 require('dotenv').config({ path: './.env' });
 
-const { AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_BUCKET_REGION, AWS_PIC_BUCKET, AWS_PDF_BUCKET, } = process.env
+const { AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_BUCKET_REGION, AWS_PIC_BUCKET, AWS_PDF_BUCKET, AWS_CEDULA_BUCKET } = process.env
 
 AWS.config.update({
     credentials: {
@@ -67,7 +67,36 @@ const aws_upload_pdf = (params) => {
     })
 }
 
+const s3_ced = new AWS.S3({ params: { Bucket: 'cedula-docappoint-bucket' } });
+
+const aws_upload_ced = (params) => {
+    return new Promise((resolve, reject) => {
+        
+        const { filename, file } = params;
+        const currentTime = new Date().getTime();
+        const buf = Buffer.from(file.split(',')[1], "base64");
+
+        const data = {
+            Key: `${currentTime}_${filename}`,
+            Body: buf,
+            ContentEncoding: "base64",
+            // ContentType: "application/pdf",
+        }
+
+        s3_ced.putObject(data, (err, data) => {
+            if (err) {
+                console.log(`Error uploading file: ${err}`)
+                reject(err);
+            } else {
+                const url = `${AWS_CEDULA_BUCKET}/${currentTime}_${filename}`;
+                resolve({ url });
+            }
+        })
+    })
+}
+
 module.exports = {
     aws_upload_img,
     aws_upload_pdf,
+    aws_upload_ced,
 }
