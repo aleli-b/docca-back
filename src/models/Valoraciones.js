@@ -4,7 +4,7 @@ module.exports = (sequelize) => {
     sequelize.define(
         'valoraciones',
         {
-            idPagoMP: {
+            turnoId: {
                 type: DataTypes.UUID,
                 allowNull: false,
                 primaryKey: true,
@@ -22,9 +22,14 @@ module.exports = (sequelize) => {
             },
             valoracion:{
                 type: DataTypes.INTEGER,
+                primaryKey: true,
                 allowNull:false,
-                defaultValue: DataTypes.INTEGER
+                defaultValue: 0
 
+            },
+            reseña:{
+                type: DataTypes.STRING,
+                allowNull:false,
             }
         },
         {

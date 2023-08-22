@@ -6,7 +6,9 @@ const { Op } = require("sequelize");
 
 async function getOccupiedTurnos(req, res) {
   try {
-    const turnoDB = await Turno.findAll({});
+    const turnoDB = await Turno.findAll({
+      include: ["paciente", "doctor"]
+    });
     return res.status(200).json(turnoDB);
   } catch (error) {
     console.log(error);

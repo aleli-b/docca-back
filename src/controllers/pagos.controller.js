@@ -1,6 +1,6 @@
 require("dotenv").config({ path: "./.env" });
 const bodyParser = require("body-parser");
-const { Pago, User, Turno } = require("../db");
+const { Pago, User, Turno, Labtest } = require("../db");
 const axios = require("axios");
 
 async function setPago(userData, turnoId) {
@@ -52,7 +52,20 @@ async function getConsultas(req, res) {
             {
               model: User,
               as: "doctor",
-              attributes: ["name", "lastName", "userType", "category","lab_category"],
+              attributes: [
+                "name",
+                "lastName",
+                "userType",
+                "category",
+                "lab_category",
+              ],
+            },
+            {
+              model: Labtest,
+              attributes: [
+                "lab_test_url",
+                "labId",
+              ],
             },
           ],
         },
