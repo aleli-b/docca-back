@@ -1,7 +1,7 @@
 require("dotenv").config({ path: "./.env" });
 const bodyParser = require("body-parser");
 const mercadopago = require("mercadopago");
-const { Valoraciones, Turno } = require("../db");
+const { Valoraciones, Turno, User } = require("../db");
 const axios = require("axios");
 
 const setValoration = async (req, res) => {
@@ -73,14 +73,40 @@ async function getValoration(req, res) {
     const cantidadRegistros = valoraciones.length;
     const promedioValoracion =
       cantidadRegistros > 0 ? sumaValoracion / cantidadRegistros : 0;
-    res.json({ promedioValoracion });
+    const promedioEntero = Math.floor(promedioValoracion);
+    res.json({ promedioValoracion: promedioEntero });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
 }
 
+async function getReseña(req, res) {
+  console.log(req.body.doctorId);
+  try {
+    const valoraciones = await Valoraciones.findAll({
+      attributes: ["turnoId", "reseña", "userId", "createdAt"], // Recuperar los campos "reseña", "userId" y "createdAt"
+      where: {
+        doctorId: req.body.doctorId,
+      },
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["name", "profile_picture_url"],
+        },
+      ],
+    });
+
+    res.json({ valoraciones });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+}
+
 module.exports = {
   setValoration,
   getValoration,
+  getReseña,
 };

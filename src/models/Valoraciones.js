@@ -22,7 +22,6 @@ module.exports = (sequelize) => {
             },
             valoracion:{
                 type: DataTypes.INTEGER,
-                primaryKey: true,
                 allowNull:false,
                 defaultValue: 0
 

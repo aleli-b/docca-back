@@ -148,6 +148,10 @@ Turno.hasOne(Valoraciones,{
   as: "valoracion"
 })
 
+Valoraciones.belongsTo(User, { foreignKey: 'userId', as: "user" });
+
+User.hasMany(Valoraciones, { foreignKey: 'userId', as: "reseñas" });
+
 
 
 
