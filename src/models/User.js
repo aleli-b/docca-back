@@ -68,6 +68,10 @@ module.exports = (sequelize) => {
                 type: DataTypes.INTEGER,
                 allowNull: true,
             },
+            clabe: {
+                type: DataTypes.BIGINT,
+                allowNull: true,
+            },
             subscription: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
