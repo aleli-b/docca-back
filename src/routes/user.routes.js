@@ -19,6 +19,8 @@ router.patch('/users/:id/', jwtVerify, userController.updateUser)
 
 router.patch('/users/:id/ban', userController.banUser)
 
+router.patch('/users/:id/verify', userController.verifyUser)
+
 router.post('/login', userController.login)
 
 router.post('/forgot-password', userController.forgotPassword)

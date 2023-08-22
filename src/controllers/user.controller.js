@@ -211,6 +211,26 @@ const banUser = async (req, res) => {
     }
 };
 
+const verifyUser = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const user = await User.findByPk(id);
+        if (!user) {
+            return res.status(404).send(`El usuario con id ${id} no se ha encontrado`);
+        }
+        if (user.cedulaVerified == false) {
+            user.cedulaVerified = true;
+        } else {
+            user.cedulaVerified = false
+        }
+        await user.save();
+        return res.status(200).send(user);
+    } catch (error) {
+        console.log(error);
+        res.status(400).send('Error al actualizar estado de usuario');
+    }
+};
+
 
 async function login(req, res) {
     try {
@@ -371,6 +391,7 @@ module.exports = {
     getLabs,
     addUser,
     banUser,
+    verifyUser,
     updateUser,
     getUsersByFilters,
     login,
