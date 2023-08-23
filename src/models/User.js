@@ -135,6 +135,21 @@ module.exports = (sequelize) => {
                 allowNull: true,
                 defaultValue: null,
             },
+            startTime: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                defaultValue: null,
+            },
+            endTime: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                defaultValue: null,
+            },
+            interval: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                defaultValue: null,
+            },
             lab_category: {
                 type: DataTypes.ENUM('bioquimico', 'radiografia', 'tomografia',),
                 allowNull: true,
