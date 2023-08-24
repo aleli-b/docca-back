@@ -72,6 +72,10 @@ module.exports = (sequelize) => {
                 type: DataTypes.BIGINT,
                 allowNull: true,
             },
+            bank: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
             subscription: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
